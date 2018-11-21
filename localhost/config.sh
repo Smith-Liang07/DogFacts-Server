@@ -1,0 +1,19 @@
+#!/bin/sh
+
+APP_ID="cat-facts-parse"
+MASTER_KEY="GGkpOLLdf21A"
+MONGODB_URI="mongodb://admin:yD8JSKRUzXSQYZyN@ds147388-a0.mlab.com:47388/cat-facts"
+PARSE_MOUNT="/parse"
+SERVER_URL="http://localhost:1337/parse"
+DEFAULT_PHONE_NUMBER="+12142166494"
+TWILIO_ACCOUNT_ID="AC8353b9970b09f86423335e8dadd0e001"
+TWILIO_ACCESS_TOKEN="89b6cd83b66c2a2f4b6f2cecb14b0cee"
+
+export APP_ID
+export MASTER_KEY
+export MONGODB_URI
+export PARSE_MOUNT
+export SERVER_URL
+export DEFAULT_PHONE_NUMBER
+export TWILIO_ACCOUNT_ID
+export TWILIO_ACCESS_TOKEN
