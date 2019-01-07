@@ -1,7 +1,7 @@
 {
   "name": "parse-server-example",
   "version": "1.4.0",
-  "description": "Cat Facts web server",
+  "description": "An example Parse API server using the parse-server module",
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -9,14 +9,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.17.1",
     "express": "~4.11.x",
-    "iap": "^0.5.0",
     "kerberos": "~0.0.x",
     "parse": "~1.8.0",
-    "parse-server": "*",
-    "twilio": "^2.9.1",
-    "underscore": "^1.8.3"
+    "parse-server": "*"
   },
   "scripts": {
     "start": "node index.js"
