@@ -14,7 +14,11 @@ if (!databaseUri) {
 var api = new ParseServer({
   databaseURI: databaseUri || 'mongodb://localhost:27017/dev',
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
-  appId: process.env.APP_ID || 'myAppId',
+  appId: process.env.APP_ID || 'dog-facts-parse',
+  clientKey: process.env.CLIENT_KEY || '', 
+  javascriptKey: process.env.JAVASCRIPT_KEY || '', 
+  restAPIKey: process.env.RESTAPI_KEY || '', 
+  dotNetKey: 'dot-facts-123456',
   masterKey: process.env.MASTER_KEY || '', 
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse', 
   push: {
