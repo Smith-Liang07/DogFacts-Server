@@ -23,6 +23,15 @@ var api = new ParseServer({
   serverURL: process.env.SERVER_URL || 'http://localhost:1337/parse',  // Don't forget to change to https if needed
   liveQuery: {
     classNames: ["Posts", "Comments"] // List of classes to support for query subscriptions
+  },
+  push: {
+  ios: [
+    {
+      pfx: './p12/apns_dev.p12', // Prod PFX or P12
+      bundleId: 'com.mjm.dogfactstexts',
+      production: false // Prod
+    }
+  ]
   }
 });
 // Client-keys like the javascript key or the .NET key are not necessary with parse-server
@@ -40,7 +49,7 @@ app.use(mountPath, api);
 
 // Parse Server plays nicely with the rest of your web routes
 app.get('/', function(req, res) {
-  res.status(200).send('I dream of being a website.  Please star the parse-server repo on GitHub!');
+  res.status(200).send('Make sure to star the parse-server repo on GitHub!');
 });
 
 // There will be a test page available on the /test path of your server url
