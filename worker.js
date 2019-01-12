@@ -11,7 +11,7 @@ var TWILIO_ACCOUNT_ID = 'AC8353b9970b09f86423335e8dadd0e001';
 var TWILIO_ACCESS_TOKEN = '89b6cd83b66c2a2f4b6f2cecb14b0cee';
 
 function runBackgroundJob() {
-    console.log('***** Cat facts job running');
+    console.log('***** Dog facts job running');
 
     var Contact = Parse.Object.extend("Contact");
     var Credit = Parse.Object.extend("Credit");

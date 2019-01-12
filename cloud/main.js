@@ -1,3 +1,4 @@
+/*
 var iap = require('iap');
  
 var _ = require('underscore');
@@ -271,4 +272,4 @@ Parse.Cloud.define('validateAndroidPurchase', function(req, res) {
         
         
     });
-});
+});*/
