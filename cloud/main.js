@@ -42,8 +42,8 @@ function validatePurchase(request, response, url, err) {
     
     var user = request.user;
     var validationParams = {"receipt-data":receipt};
-    var receiptValidPromise = new Parse.Promise();
-    var transactionValidPromise = new Parse.Promise();
+    var receiptValidPromise = new Promise();
+    var transactionValidPromise = new Promise();
     
     Parse.Cloud.httpRequest({
         method: 'POST',
