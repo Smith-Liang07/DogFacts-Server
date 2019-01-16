@@ -85,8 +85,8 @@ function validatePurchase(request, response, url, err) {
     
     }).then(function(transactions){
     
-        var transactionPromise = new Parse.Promise();
-        var productPromise = new Parse.Promise();
+        var transactionPromise = new Promise();
+        var productPromise = new Promise();
     
         console.error("Transactions found " + transactions.length);
         if(transactions.length == 0){
