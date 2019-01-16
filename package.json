@@ -13,7 +13,7 @@
     "iap": "^0.5.0",
     "kerberos": "~0.0.x",
     "parse": "~1.8.0",
-    "parse-server": "*",
+    "parse-server": "2.3.7",
     "twilio": "^2.9.1",
     "underscore": "^1.8.3"
   },
