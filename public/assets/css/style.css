@@ -197,11 +197,6 @@ a:visited {
   color: #fff !important;
 }
 
-.step--error {
-  color: red;
-  font-weight: bold;
-}
-
 #prod-test {
   margin-bottom: 60px;
 }

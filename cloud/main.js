@@ -1,9 +1,5 @@
-
 var iap = require('iap');
- 
 var _ = require('underscore');
-var pricePerSMS = 1;
-var defaultPhoneNumber = "+12132635399";
 
 var prodUrl = 'https://buy.itunes.apple.com/verifyReceipt';
 var sandboxUrl = 'https://sandbox.itunes.apple.com/verifyReceipt';
@@ -25,12 +21,53 @@ Parse.Cloud.define("validatePurchaseAndroid", function(request, response) {
     });
 });
 
+Parse.Cloud.beforeSave("Contact", function (request, response) {
+    var contact = request.object;
+    if (contact.isNew()) {
+        contact.set("strippedNumber", 
+        contact.get("phoneNumber").replace(/[\+\(\)\s-]+/g, ""));
+    }
+
+    response.success();
+});
+
+Parse.Cloud.afterSave("Message", function(request) {
+    console.log("Message saved!");
+
+    var Conversation = Parse.Object.extend("Conversation");
+    var contact = request.object.get("contact");
+    var fact = request.object.get("fact");
+
+    contact
+        .fetch({ useMasterKey: true })
+        .then(function(updatedContact) {
+            contact = updatedContact;
+            return fact.fetch({ useMasterKey: true });
+        })
+        .then(function(fact) {
+            var factContents = fact.get("contents");
+
+            var newConvo = new Conversation({
+                "contact": contact,
+                "message": factContents,
+                "isContactResponse": false
+            });
+
+            var contactOwner = contact.get("parent").id;
+
+            var acl = new Parse.ACL();
+            acl.setPublicReadAccess(false);
+            acl.setPublicWriteAccess(false);
+            acl.setReadAccess(contactOwner, true);
+
+            newConvo.setACL(acl);
+            newConvo.save(null, { useMasterKey: true });
+        });
+});
+
 // Needs authorisation
 //GET https://www.googleapis.com/androidpublisher/v2/applications/packageName/purchases/products/productId/tokens/token
-
-
 function validatePurchase(request, response, url, err) {    
-    //Parse.Cloud.useMasterKey();
     var receipt = request.params.receipt;
     var transactionId = "";
     var productId = "";
@@ -85,8 +122,8 @@ function validatePurchase(request, response, url, err) {
     
     }).then(function(transactions){
     
-        var transactionPromise = new Promise();
-        var productPromise = new Promise();
+        var transactionPromise = new Parse.Promise();
+        var productPromise = new Parse.Promise();
     
         console.error("Transactions found " + transactions.length);
         if(transactions.length == 0){
@@ -250,13 +287,13 @@ Parse.Cloud.define('validateAndroidPurchase', function(req, res) {
     var payment = {
         receipt: receipt,   // always required
         productId: productId,
-        packageName: 'com.app.dogfactstexts',
+        packageName: 'com.app.catfacts',
         keyObject: {
           type: "service_account",
-          project_id: "dogfacts-1348",
+          project_id: "catfacts-1348",
           private_key_id: "37d3d748521f5827ebd29c2c3c64bfecb4e117f3",
           private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC5qZa25ZNIIjKf\nDewqDEMvyecdbzTe6aOzhcz663Jdk0X/cBthjjiLA4rNe5ls5VGYvLXzIobd/QTd\nO0ab3+ncFco33v/ssWKbwVXVI49TSVV6LXPrqly46pdOWhguVOOjR98M/8sh4JcF\nCGv1O/Gb1CdJMyTKXk2hVgdMWk90vNiyIFP4ubi8S5/ocVHW0Jd5BmX3Ip0E65P4\n9kbRog3AZaiL8UZL/PdqPG6kYVDNIM7j5EE2MaIXakrt1D+4CChPc9iD8yj7jy07\nMDzIj08LBbGr9Z6hvZXQsrx6sWQcMnnJ5B73TGD9WBFJZ23zSx3wIcW7HjfcIbM9\nTmriY/yDAgMBAAECggEBAKTZTXbL1MABjUzogb678JPoA4uBCEK81Js7vEs27u7j\nKw2pLsaqDs5vsLjOe+XSn2aseCmPiIxmcgE09nbEk9LUjh6ZpEc3IUUGnv2Ge2YK\nARlgbkLbm0SdFwd8u2e3+/8oe4YBQQ2taqoPVjwCo34nG1LFVG9S2D7eMdC7hz0w\nRViERnZAigrfkAIiCsxGi98drY/8moGtBkKAU1eqq76eBl2P5aRpnNyZtA6bTmoV\nubzKWc77ebhQVZhAU/WB3SsxBYSiuMHfq3EJkZ1AsscoeEkFhANtg/RnnGoIBtMZ\npGbsUe5QAeJHmHAlqoGaE98WCpv+bPPZvpwU5tlJENECgYEA2rdQlwtN8rQi4OUo\npRgCE2E1BtU2BPeLVtTKDsSQM1jfwEwR/OR1hj0cOs8Z9/SJFlwIaVU3HXXna30A\nbc7Sh3Bi1Koq0Dzfd8alfeu9wA1lGCCtNMahcMDp373S/qLFA2WiCruczO586jTo\nc2eSTa+E38W+LNGtBOhVETFUbMcCgYEA2U/TqG7LKN73EH/fx9gY5CsQD0/GGOHr\nwJaN14dWWGWh4goVj53/Jwc1naMKYn3//ujkIQsguB9Hzp+sILjjMJgxDFfQpYUv\nP/iW4E2VCB+50cm6guSdW3k7HE92hfIS/KrEqqCrZehCGFNfG1DLRo4xJCOibzaq\nn8nQoCa8XmUCgYA6PFk+/omQuBoZW6sI2m2jD1z5JsgtZmQ5iIsMh5YFtgJNx3N6\nrLIGPjtIBWDavsfJplOvCDuWopAt9KiqlElGOsx156FitPKjh8cE0kJB4s8qL3ku\n9jyCMzuSkY6esmRW1TbiOLY1csLb8Z57K/aurK9qjdJnSKUTC3GrFEFwfQKBgEI9\ntA4On7z4oiUUZZlcRNIgUkfokED7dMqC2f/N0EMnz73ARyw9BA7Ygr5neX3mXIdO\nZGOyKaoWVuQkBer/kLk6WxEhH4ek3m9Ijm0XGQud6B2LuV+24kSE4sDRdBaGYMVG\nJKbCTRzGPId/umjwKtZ5937Fofj2l/IXKZH33MmFAoGBALPmbffTSCp/bOg2BuQ/\n5AA5WRPTeebXsNjTbj1lAHSgZ6ylbPywL/VBfVA5lBYhat9H2BtgpIiMKTSVm2D/\ndE0BfYRI/81WoBBN3ta8coAi2kMzUx+6o5CXco/+IvjR0yYkiTRbYIxvTVpgPTiR\nNkq9BAdIcjuSKrA5iW/d3UYy\n-----END PRIVATE KEY-----\n",
-          client_email: "purchase-validator@dogfacts-1348.iam.gserviceaccount.com",
+          client_email: "purchase-validator@catfacts-1348.iam.gserviceaccount.com",
           client_id: "111848082510135180444",
           auth_uri: "https://accounts.google.com/o/oauth2/auth",
           token_uri: "https://accounts.google.com/o/oauth2/token",

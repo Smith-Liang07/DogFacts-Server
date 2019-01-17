@@ -9,6 +9,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.17.1",
     "express": "~4.11.x",
     "iap": "^0.5.0",
     "kerberos": "~0.0.x",
