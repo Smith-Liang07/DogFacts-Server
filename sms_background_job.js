@@ -1,6 +1,8 @@
 var Parse = require('parse/node');
 var _ = require('underscore');
 var assert = require('assert-plus');
+const dotenv = require('dotenv');
+dotenv.config();
 
 Parse.initialize(process.env.APP_ID,'',process.env.MASTER_KEY);
 Parse.serverURL = process.env.SERVER_URL;
